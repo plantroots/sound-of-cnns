@@ -52,7 +52,7 @@ class Autoencoder:
         x = encoder_input
         for layer_index in range(self._num_conv_layers):
             x = self._add_conv_layer(layer_index, x)
-            return x
+        return x
 
     def _add_conv_layer(self, layer_index, x):
         """Adds a convolutional block to a graph of layers, consisting of a conv 2d + ReLU + BN"""
