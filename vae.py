@@ -1,5 +1,6 @@
 from keras import Model
-from keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense, Reshape, Conv2DTranspose, Activation
+from keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense, Reshape, Conv2DTranspose, Activation, \
+    Lambda
 from keras import backend as K
 from keras.optimizers import Adam
 from keras.losses import MeanSquaredError
@@ -7,11 +8,14 @@ from keras.losses import MeanSquaredError
 import os
 import pickle
 import numpy as np
+import tensorflow as tf
+
+tf.compat.v1.disable_eager_execution()
 
 
-class Autoencoder:
+class VAE:
     """
-    Autoencoder represents a Deep Convolutional Autoencoder architecture with
+    VAE represents a Deep Convolutional Variational Autoencoder architecture with
     mirrored encoder and decoder components.
     """
 
@@ -72,7 +76,7 @@ class Autoencoder:
         parameters_path = os.path.join(save_folder, "parameters.pkl")
         with open(parameters_path, "rb") as f:
             parameters = pickle.load(f)
-        autoencoder = Autoencoder(*parameters)
+        autoencoder = VAE(*parameters)
         weights_path = os.path.join(save_folder, "weights.h5")
         autoencoder.load_weights(weights_path)
         return autoencoder
@@ -193,15 +197,25 @@ class Autoencoder:
         return x
 
     def _add_bottleneck(self, x):
-        """Flatten data and add bottleneck (Dense Layer)"""
+        """Flatten data and add bottleneck with Gaussian Sampling"""
         self._shape_before_bottleneck = K.int_shape(x)[1:]  # [2, 7, 7, 32]
         x = Flatten()(x)
-        x = Dense(self.latent_space_dim, name="encoder_output")(x)
+        self.mu = Dense(self.latent_space_dim, name="mu")(x)
+        self.log_variance = Dense(self.latent_space_dim, name="log_variance")(x)
+
+        def sample_point_from_normal_distribution(args):
+            mu, log_variance = args
+            epsilon = K.random_normal(shape=K.shape(self.mu), mean=0., stddev=1.)
+            sampled_point = mu + K.exp(log_variance / 2) * epsilon
+            return sampled_point
+
+        x = Lambda(sample_point_from_normal_distribution,
+                   name="encoder_output")([self.mu, self.log_variance])
         return x
 
 
 if __name__ == "__main__":
-    autoencoder = Autoencoder(
+    autoencoder = VAE(
         input_shape=(28, 28, 1),
         conv_filters=(32, 64, 64, 64),
         conv_kernels=(3, 3, 3, 3),
