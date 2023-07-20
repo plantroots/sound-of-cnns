@@ -15,7 +15,7 @@ import numpy as np
 class Loader:
     """Loader is responsible for loading an audio file"""
 
-    def __int__(self, sample_rate, duration, mono):
+    def __init__(self, sample_rate, duration, mono):
         self.sample_rate = sample_rate
         self.duration = duration
         self.mono = mono
