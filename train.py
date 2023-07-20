@@ -3,7 +3,7 @@ from vae import VAE
 
 LEARNING_RATE = 0.0005
 BATCH_SIZE = 32
-EPOCHS = 20
+EPOCHS = 100
 
 
 def load_mnist():

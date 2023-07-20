@@ -30,6 +30,8 @@ class VAE:
         self.conv_kernels = conv_kernels  # [3, 5, 3]
         self.conv_strides = conv_strides  # [1, 2, 2]
         self.latent_space_dim = latent_space_dim  # 2
+        # hyperparameter
+        self.reconstruction_loss_weight = 1000
 
         self.encoder = None
         self.decoder = None
@@ -48,8 +50,12 @@ class VAE:
 
     def compile(self, learning_rate=0.0001):
         optimizer = Adam(learning_rate=learning_rate)
-        mse_loss = MeanSquaredError()
-        self.model.compile(optimizer=optimizer, loss=mse_loss)
+        self.model.compile(
+            optimizer=optimizer,
+            loss=self._calculate_combined_loss,
+            # TODO: add them in tensorboard
+            # metrics=[self._calculate_reconstruction_loss, self._calculate_kl_loss]
+        )
 
     def train(self, x_train, batch_size, num_epochs):
         self.model.fit(x_train,
@@ -80,6 +86,21 @@ class VAE:
         weights_path = os.path.join(save_folder, "weights.h5")
         autoencoder.load_weights(weights_path)
         return autoencoder
+
+    def _calculate_combined_loss(self, y_target, y_predicted):
+        reconstruction_loss = self._calculate_reconstruction_loss(y_target, y_predicted)
+        kl_loss = self._calculate_kl_loss(y_target, y_predicted)
+        combined_loss = self.reconstruction_loss_weight * reconstruction_loss + kl_loss
+        return combined_loss
+
+    def _calculate_reconstruction_loss(self, y_target, y_predicted):
+        error = y_target - y_predicted
+        reconstruction_loss = K.mean(K.square(error), axis=[1, 2, 3])
+        return reconstruction_loss
+
+    def _calculate_kl_loss(self, y_target, y_predicted):
+        kl_loss = - 0.5 * K.sum(1 + self.log_variance - K.square(self.mu) - K.exp(self.log_variance), axis=1)
+        return kl_loss
 
     def _create_folder_if_it_doesnt_exist(self, folder):
         if not os.path.exists(folder):
