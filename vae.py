@@ -3,7 +3,6 @@ from keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense
     Lambda
 from keras import backend as K
 from keras.optimizers import Adam
-from keras.losses import MeanSquaredError
 
 import os
 import pickle
