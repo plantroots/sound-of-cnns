@@ -46,9 +46,29 @@ if __name__ == "__main__":
     num_sample_images_to_show = 8
     sample_images, _ = select_images(x_test, y_test, num_sample_images_to_show)
     reconstructed_images, _ = autoencoder.reconstruct(sample_images)
+    import tensorflow as tf
+
+    # List all available physical devices in your system
+    physical_devices = tf.config.list_physical_devices()
+
+    # Filter out only GPU devices
+    gpu_devices = [device.name for device in physical_devices if 'GPU' in device.device_type]
+
+    if gpu_devices:
+        # If there are GPU devices, TensorFlow is working on the GPU
+        print("TensorFlow is using the GPU.")
+        print("Available GPU devices:")
+        for device in gpu_devices:
+            print(device)
+    else:
+        # If there are no GPU devices, TensorFlow is working on the CPU
+        print("TensorFlow is using the CPU.")
+
     plot_reconstructed_images(sample_images, reconstructed_images)
 
-    num_images = 6000
-    sample_images, sample_labels = select_images(x_test, y_test, num_images)
-    _, latent_representations = autoencoder.reconstruct(sample_images)
-    plot_images_encoded_in_latent_space(latent_representations, sample_labels)
+
+    x = "x"
+    # num_images = 6000
+    # sample_images, sample_labels = select_images(x_test, y_test, num_images)
+    # _, latent_representations = autoencoder.reconstruct(sample_images)
+    # plot_images_encoded_in_latent_space(latent_representations, sample_labels)
