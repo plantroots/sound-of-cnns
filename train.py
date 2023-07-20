@@ -26,7 +26,7 @@ def train(x_train, learning_rate, batch_size, epochs):
         conv_filters=(32, 64, 64, 64),
         conv_kernels=(3, 3, 3, 3),
         conv_strides=(1, 2, 2, 1),
-        latent_space_dim=2
+        latent_space_dim=2  # increase this for better fidelity
     )
     autoencoder.summary()
     autoencoder.compile(learning_rate)
