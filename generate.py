@@ -9,6 +9,7 @@ from vae import VAE
 from train import SPECTROGRAMS_PATH
 
 HOP_LENGTH = 256
+# TODO: add them programmatically
 SAVE_DIR_ORIGINAL = r"samples\original"
 SAVE_DIR_GENERATED = r"samples\generated"
 MIN_MAX_VALUES_PATH = r"c:\Dataset\FSDD\min_max_values.pkl"
