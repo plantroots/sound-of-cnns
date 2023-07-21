@@ -30,7 +30,9 @@ class VAE:
         self.conv_strides = conv_strides  # [1, 2, 2]
         self.latent_space_dim = latent_space_dim  # 2
         # hyperparameter
-        self.reconstruction_loss_weight = 1000
+        # 1000 for MNIST
+        # 1000000 for audio
+        self.reconstruction_loss_weight = 1000000
 
         self.encoder = None
         self.decoder = None
