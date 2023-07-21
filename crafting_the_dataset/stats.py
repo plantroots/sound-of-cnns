@@ -1,3 +1,3 @@
-"""Check the sample rate, mono/stereo status and length"""
+"""Check the sample rate, mono/stereo status, length and amplitude"""
 
 import librosa
