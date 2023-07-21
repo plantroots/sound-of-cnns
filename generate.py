@@ -9,9 +9,9 @@ from vae import VAE
 from train import SPECTROGRAMS_PATH
 
 HOP_LENGTH = 256
-SAVE_DIR_ORIGINAL = "samples/original/"
-SAVE_DIR_GENERATED = "samples/generated/"
-MIN_MAX_VALUES_PATH = "/home/valerio/datasets/fsdd/min_max_values.pkl"
+SAVE_DIR_ORIGINAL = r"samples\original"
+SAVE_DIR_GENERATED = r"samples\generated"
+MIN_MAX_VALUES_PATH = r"c:\Dataset\FSDD\min_max_values.pkl"
 
 
 def load_fsdd(spectrograms_path):
