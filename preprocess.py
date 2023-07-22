@@ -188,9 +188,9 @@ if __name__ == "__main__":
     SAMPLE_RATE = 22050
     MONO = True
 
-    SPECTROGRAMS_SAVE_DIR = r"C:\Datasets\FSDD\spectrograms"
-    MIN_MAX_VALUES_SAVE_DIR = r"C:\Datasets\FSDD"
-    FILES_DIR = r"C:\Datasets\FSDD\recordings"
+    SPECTROGRAMS_SAVE_DIR = r"c:\Dataset\FSDD\spectrograms"
+    MIN_MAX_VALUES_SAVE_DIR = r"c:\Dataset\FSDD"
+    FILES_DIR = r"c:\Dataset\FSDD\recordings"
 
     # instantiate all objects
     loader = Loader(SAMPLE_RATE, DURATION, MONO)
