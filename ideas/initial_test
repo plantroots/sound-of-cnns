@@ -1,0 +1,4 @@
+1. Train on 10 drum samples with spectrograms.
+2. Pick 4 training samples and see how the model reconstructs them.
+3. Implement a basic latent space sampling method and see if it really is different from the original 10 samples.
+4. Try to visualize the latent space to see is there is clustering around the origin.
