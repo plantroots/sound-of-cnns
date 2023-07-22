@@ -31,8 +31,7 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
 files = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(files)
 
-unique_sample_rates = stats_df["samplerate"].unique().tolist()
-num_of_unique_sample_rates = len(unique_sample_rates)
+unique_sample_rates = len(stats_df["samplerate"].unique().tolist())
 
 
 def statistic_print(dataframe_column_name, show_unique=False):
@@ -47,6 +46,17 @@ def statistic_print(dataframe_column_name, show_unique=False):
     print("-" * 10, "\n")
 
 
+def histogram(dataframe_column):
+    column_name = dataframe_column.name
+    unique = len(dataframe_column.unique().tolist())
+    plt.style.use('grayscale')
+    plt.hist(dataframe_column, bins=unique)
+    plt.xlabel(column_name)
+    plt.ylabel('count')
+    plt.title(column_name)
+    plt.show()
+
+
 print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
 statistic_print("duration")
@@ -54,7 +64,5 @@ statistic_print("samplerate", show_unique=True)
 print("*" * 25)
 
 if SHOW_PLOT:
-    plt.hist(stats_df['samplerate'], bins=num_of_unique_sample_rates)
-    column_name = stats_df['samplerate'].name
-    plt.title(f'Histogram of {column_name}')
-    plt.show()
+    histogram(stats_df["samplerate"])
+    histogram(stats_df["duration"])
