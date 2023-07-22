@@ -6,9 +6,9 @@ from vae import VAE
 
 LEARNING_RATE = 0.0005
 BATCH_SIZE = 64
-EPOCHS = 150
+EPOCHS = 5
 
-SPECTROGRAMS_PATH = r"c:\Dataset\FSDD\spectrograms"
+SPECTROGRAMS_PATH = r"C:\Datasets\FSDD\spectrograms"
 
 
 # def load_mnist():
@@ -65,7 +65,7 @@ def train(x_train, learning_rate, batch_size, epochs):
 if __name__ == "__main__":
     # x_train, _, _, _ = load_mnist()
     x_train = load_fsdd(SPECTROGRAMS_PATH)
-    autoencoder = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
+    autoencoder = train(x_train[:100], LEARNING_RATE, BATCH_SIZE, EPOCHS)
     autoencoder.save("model")
     # autoencoder2 = Autoencoder.load("model")
     # autoencoder2.summary()

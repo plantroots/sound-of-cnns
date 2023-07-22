@@ -12,7 +12,7 @@ HOP_LENGTH = 256
 # TODO: add them programmatically
 SAVE_DIR_ORIGINAL = r"samples\original"
 SAVE_DIR_GENERATED = r"samples\generated"
-MIN_MAX_VALUES_PATH = r"c:\Dataset\FSDD\min_max_values.pkl"
+MIN_MAX_VALUES_PATH = r"C:\Datasets\FSDD\min_max_values.pkl"
 
 
 def load_fsdd(spectrograms_path):
