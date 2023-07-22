@@ -66,3 +66,5 @@ print("*" * 25)
 if SHOW_PLOT:
     histogram(stats_df["samplerate"])
     histogram(stats_df["duration"])
+
+# TODO: check mono/stereo and amplitude
