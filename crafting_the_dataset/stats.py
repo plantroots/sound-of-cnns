@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 AUDIO_FILES_DIR = r"c:\Dataset\kicks"
-SHOW_PLOT = False
+SHOW_PLOT = True
 FFT_LIB = librosa.get_fftlib()
 
 """
@@ -24,9 +24,22 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
         file_path = os.path.join(root, file)
         file_duration = librosa.get_duration(path=file_path)
         file_samplerate = librosa.get_samplerate(path=file_path)
+
+        # mono or stereo
+        channels = None
+        audio_data, sr = librosa.load(file_path, mono=False)
+        num_channels = len(audio_data.shape)
+        if num_channels == 1:
+            channels = 1
+        elif num_channels == 2:
+            channels = 2
+        else:
+            print("Unknown number of channels.")
+
         file_cluster[file] = {"path": file_path,
                               "duration": file_duration,
-                              "samplerate": file_samplerate}
+                              "samplerate": file_samplerate,
+                              "channels": channels}
 
 files = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(files)
@@ -61,10 +74,11 @@ print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
 statistic_print("duration")
 statistic_print("samplerate", show_unique=True)
+statistic_print("channels", show_unique=True)
 print("*" * 25)
 
 if SHOW_PLOT:
     histogram(stats_df["samplerate"])
     histogram(stats_df["duration"])
 
-# TODO: check mono/stereo and amplitude
+# TODO: check amplitude
