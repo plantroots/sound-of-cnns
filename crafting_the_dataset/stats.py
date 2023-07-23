@@ -54,7 +54,7 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
 # FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
 # 1.15 with 1x stddev and 1.74 with 2x stddev
 DURATION_THRESHOLD_IN_SECONDS = 1.74
-max_length = round(max(v["duration"] for k, v in file_cluster.items()), 2)
+# max_length = round(max(v["duration"] for k, v in file_cluster.items()), 2)
 
 signals_filtered = []
 for file_name, metadata in file_cluster.items():
@@ -63,8 +63,30 @@ for file_name, metadata in file_cluster.items():
         signals_filtered.append(signal)
 print(len(signals_filtered))
 
-# TODO: PAD TO THE SAME LENGTH THE FILTERED SIGNALS
+# PAD TO THE SAME LENGTH THE FILTERED SIGNALS
+# max_length = max(librosa.get_duration(y=sig, sr=44100) for sig in signals_filtered)
+max_length = DURATION_THRESHOLD_IN_SECONDS
+signals_filtered_padded = []
+for sig in signals_filtered:
+    signal_padded = librosa.util.pad_center(sig, size=int(max_length * 44100))
+    signals_filtered_padded.append(signal_padded)
 
+# check padded
+ds = []
+for s in signals_filtered_padded:
+    ds.append(librosa.get_duration(y=s, sr=44100))
+print(min(ds))
+print(max(ds))
+
+# visualize them
+selected_waveforms = signals_filtered_padded[6:8]
+plt.figure(figsize=(10, 4))
+librosa.display.waveshow(selected_waveforms[0], sr=44100)
+plt.title('Waveform')
+plt.xlabel('Time (seconds)')
+plt.ylabel('Amplitude')
+plt.tight_layout()
+plt.show()
 
 files = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(files)
