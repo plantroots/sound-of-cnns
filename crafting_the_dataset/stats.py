@@ -23,13 +23,16 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
     for file in files:
         file_path = os.path.join(root, file)
 
-        # DURATION and SAMPLERATE
+        # DURATION
         file_duration = librosa.get_duration(path=file_path)
-        file_samplerate = librosa.get_samplerate(path=file_path)
 
         # MONO/STEREO status
         channels = None
-        audio_data, sr = librosa.load(file_path, mono=False)
+
+        # MAKE all MONO and the same SAMPLERATE
+        # audio_data, sample_rate = librosa.load(file_path)
+        audio_data, sample_rate = librosa.load(file_path, mono=True, sr=44100)
+
         num_channels = len(audio_data.shape)
         if num_channels == 1:
             channels = 1
@@ -43,7 +46,7 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
 
         file_cluster[file] = {"path": file_path,
                               "duration": file_duration,
-                              "samplerate": file_samplerate,
+                              "samplerate": sample_rate,
                               "channels": channels,
                               "rms": rms
                               }
@@ -85,9 +88,7 @@ statistic_print("rms")
 statistic_print("channels", show_unique=True)
 print("*" * 25)
 
-if SHOW_PLOT:
-    histogram(stats_df["samplerate"])
-    histogram(stats_df["duration"])
-    histogram(stats_df["rms"])
-
-# TODO: check the onset of the samples
+# if SHOW_PLOT:
+#     histogram(stats_df["samplerate"])
+#     histogram(stats_df["duration"])
+#     histogram(stats_df["rms"])
