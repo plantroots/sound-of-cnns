@@ -22,10 +22,12 @@ file_cluster = {}
 for root, _, files in os.walk(AUDIO_FILES_DIR):
     for file in files:
         file_path = os.path.join(root, file)
+
+        # DURATION and SAMPLERATE
         file_duration = librosa.get_duration(path=file_path)
         file_samplerate = librosa.get_samplerate(path=file_path)
 
-        # mono or stereo
+        # MONO/STEREO status
         channels = None
         audio_data, sr = librosa.load(file_path, mono=False)
         num_channels = len(audio_data.shape)
@@ -36,14 +38,15 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
         else:
             print("unknown number of channels.")
 
-        # RMS is the volume or loudness of the sound in the given audio file
+        # RMS/LOUDNESS
         rms = np.sqrt(np.mean(audio_data ** 2))
 
         file_cluster[file] = {"path": file_path,
                               "duration": file_duration,
                               "samplerate": file_samplerate,
-                              "rms": rms,
-                              "channels": channels}
+                              "channels": channels,
+                              "rms": rms
+                              }
 
 files = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(files)
@@ -86,3 +89,5 @@ if SHOW_PLOT:
     histogram(stats_df["samplerate"])
     histogram(stats_df["duration"])
     histogram(stats_df["rms"])
+
+# TODO: check the onset of the samples
