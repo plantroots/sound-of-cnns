@@ -51,6 +51,21 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
                               "rms": rms
                               }
 
+# FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
+# 1.15 with 1x stddev and 1.74 with 2x stddev
+DURATION_THRESHOLD_IN_SECONDS = 1.74
+max_length = round(max(v["duration"] for k, v in file_cluster.items()), 2)
+
+signals_filtered = []
+for file_name, metadata in file_cluster.items():
+    if metadata["duration"] <= DURATION_THRESHOLD_IN_SECONDS:
+        signal, _ = librosa.load(metadata["path"], mono=True, sr=44100)
+        signals_filtered.append(signal)
+print(len(signals_filtered))
+
+# TODO: PAD TO THE SAME LENGTH THE FILTERED SIGNALS
+
+
 files = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(files)
 
@@ -82,10 +97,10 @@ def histogram(dataframe_column):
 
 print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
-statistic_print("duration")
-statistic_print("samplerate", show_unique=True)
-statistic_print("rms")
-statistic_print("channels", show_unique=True)
+# statistic_print("duration")
+# statistic_print("samplerate", show_unique=True)
+# statistic_print("rms")
+# statistic_print("channels", show_unique=True)
 print("*" * 25)
 
 # if SHOW_PLOT:
