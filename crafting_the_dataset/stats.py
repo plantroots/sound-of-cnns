@@ -1,4 +1,4 @@
-"""Check the sample rate, mono/stereo status, duration and amplitude"""
+"""Check the duration, sample rate, mono/stereo status and rms/loudness"""
 
 import os
 import librosa
@@ -34,11 +34,15 @@ for root, _, files in os.walk(AUDIO_FILES_DIR):
         elif num_channels == 2:
             channels = 2
         else:
-            print("Unknown number of channels.")
+            print("unknown number of channels.")
+
+        # RMS is the volume or loudness of the sound in the given audio file
+        rms = np.sqrt(np.mean(audio_data ** 2))
 
         file_cluster[file] = {"path": file_path,
                               "duration": file_duration,
                               "samplerate": file_samplerate,
+                              "rms": rms,
                               "channels": channels}
 
 files = tuple(file_cluster.values())
@@ -74,11 +78,11 @@ print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
 statistic_print("duration")
 statistic_print("samplerate", show_unique=True)
+statistic_print("rms")
 statistic_print("channels", show_unique=True)
 print("*" * 25)
 
 if SHOW_PLOT:
     histogram(stats_df["samplerate"])
     histogram(stats_df["duration"])
-
-# TODO: check amplitude
+    histogram(stats_df["rms"])
