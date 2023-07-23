@@ -24,6 +24,7 @@ class SoundGenerator:
         for spectrogram, min_max_value in zip(spectrograms, min_max_values):
             # reshape the log spectrogram
             log_spectrogram = spectrogram[:, :, 0]
+            # TODO try to implement a dataset wide normalization process (not idiosyncratic)
             # apply denormalisation
             denorm_log_spec = self._min_max_normaliser.denormalise(
                 log_spectrogram, min_max_value["min"], min_max_value["max"])
