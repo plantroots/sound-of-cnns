@@ -63,6 +63,7 @@ for file_name, metadata in file_cluster.items():
         signals_filtered.append(signal)
 print(len(signals_filtered))
 
+# TODO: adding padding to the right only
 # PAD TO THE SAME LENGTH THE FILTERED SIGNALS
 # max_length = max(librosa.get_duration(y=sig, sr=44100) for sig in signals_filtered)
 max_length = DURATION_THRESHOLD_IN_SECONDS
