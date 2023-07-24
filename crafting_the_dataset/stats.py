@@ -97,26 +97,32 @@ def histogram(dataframe_column):
     plt.show()
 
 
+def filter_based_on_duration_in_seconds(metadata_object, duration_threshold):
+    filtered = []
+    for file_name, metadata in metadata_object.items():
+        if metadata["duration"] <= duration_threshold:
+            signal, _ = librosa.load(metadata["path"], mono=True, sr=44100)
+            filtered.append(signal)
+    return filtered, len(filtered)
+
+
 # LOADING/READING the audio data
 with open(r"metadata\audio_metadata.pkl", 'rb') as f:
     file_cluster = pickle.load(f)
 # file_cluster = read_files_metadata(AUDIO_FILES_DIR, save_to_disk=True)
 
-# FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
+# FILTER some of the signals out (longer than 2 seconds) - 2826 total samples in the dataset
 # 1.15 with 1x stddev and 1.74 with 2x stddev
 # at 1.74 -> 76734 samples at this samplerate
 DURATION_THRESHOLD_IN_SECONDS = 1.74
-# max_length = round(max(v["duration"] for k, v in file_cluster.items()), 2)
-
-signals_filtered = []
-for file_name, metadata in file_cluster.items():
-    if metadata["duration"] <= DURATION_THRESHOLD_IN_SECONDS:
-        signal, _ = librosa.load(metadata["path"], mono=True, sr=44100)
-        signals_filtered.append(signal)
-print(len(signals_filtered))
+signals_filtered, num_of_signals_after_filtering = filter_based_on_duration_in_seconds(file_cluster,
+                                                                                       DURATION_THRESHOLD_IN_SECONDS)
+print("# of signals before filtering:", len(file_cluster.keys()))
+print("# of signals after filtering:", num_of_signals_after_filtering)
+print("# of signals removed:", len(file_cluster.keys()) - num_of_signals_after_filtering)
 
 # TODO: adding padding to the right only
-# PAD TO THE SAME LENGTH THE FILTERED SIGNALS
+# PAD to the same length
 # max_length = max(librosa.get_duration(y=sig, sr=44100) for sig in signals_filtered)
 max_length = DURATION_THRESHOLD_IN_SECONDS
 signals_filtered_padded = []
