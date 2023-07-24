@@ -12,6 +12,49 @@ SHOW_PLOT = True
 FFT_LIB = librosa.get_fftlib()
 
 
+def read_files_metadata(files_dir, save_to_disk=False):
+    """
+    Outputs and object that looks like this:
+
+        'kick_2826.wav': {'path': 'c:\\Dataset\\kicks\\kick_2826.wav',
+                          'duration': 0.8173333333333334,
+                          'samplerate': 48000}
+    """
+    file_cluster = {}
+    for root, _, files in os.walk(files_dir):
+        for file in files:
+            file_path = os.path.join(root, file)
+
+            # DURATION
+            file_duration = librosa.get_duration(path=file_path)
+
+            # MONO/STEREO status
+            channels = None
+
+            # MAKE all MONO and the same SAMPLERATE
+            # audio_data, sample_rate = librosa.load(file_path)
+            audio_data, sample_rate = librosa.load(file_path, mono=True, sr=44100)
+
+            num_channels = len(audio_data.shape)
+            if num_channels == 1:
+                channels = 1
+            elif num_channels == 2:
+                channels = 2
+            else:
+                print("unknown number of channels.")
+
+            # RMS/LOUDNESS
+            rms = np.sqrt(np.mean(audio_data ** 2))
+
+            file_cluster[file] = {"path": file_path,
+                                  "duration": file_duration,
+                                  "samplerate": sample_rate,
+                                  "channels": channels,
+                                  "rms": rms
+                                  }
+    return file_cluster
+
+
 def pick_a_random_waveform_and_display_it(signals):
     random_index = random.randint(0, len(signals) - 1)
     randomly_picked_array = signals[random_index]
@@ -47,46 +90,7 @@ def histogram(dataframe_column):
     plt.show()
 
 
-"""
-Outputs and object that looks like this:
-
-    'kick_2826.wav': {'path': 'c:\\Dataset\\kicks\\kick_2826.wav', 
-                      'duration': 0.8173333333333334, 
-                      'samplerate': 48000}
-"""
-
-file_cluster = {}
-for root, _, files in os.walk(AUDIO_FILES_DIR):
-    for file in files:
-        file_path = os.path.join(root, file)
-
-        # DURATION
-        file_duration = librosa.get_duration(path=file_path)
-
-        # MONO/STEREO status
-        channels = None
-
-        # MAKE all MONO and the same SAMPLERATE
-        # audio_data, sample_rate = librosa.load(file_path)
-        audio_data, sample_rate = librosa.load(file_path, mono=True, sr=44100)
-
-        num_channels = len(audio_data.shape)
-        if num_channels == 1:
-            channels = 1
-        elif num_channels == 2:
-            channels = 2
-        else:
-            print("unknown number of channels.")
-
-        # RMS/LOUDNESS
-        rms = np.sqrt(np.mean(audio_data ** 2))
-
-        file_cluster[file] = {"path": file_path,
-                              "duration": file_duration,
-                              "samplerate": sample_rate,
-                              "channels": channels,
-                              "rms": rms
-                              }
+file_cluster = read_files_metadata(AUDIO_FILES_DIR)
 
 # FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
 # 1.15 with 1x stddev and 1.74 with 2x stddev
@@ -117,8 +121,8 @@ for s in signals_filtered_padded:
 print(min(ds))
 print(max(ds))
 
-files = tuple(file_cluster.values())
-stats_df = pd.DataFrame.from_records(files)
+file_cluster_tuple = tuple(file_cluster.values())
+stats_df = pd.DataFrame.from_records(file_cluster_tuple)
 
 unique_sample_rates = len(stats_df["samplerate"].unique().tolist())
 
