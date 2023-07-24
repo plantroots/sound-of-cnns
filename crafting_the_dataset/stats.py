@@ -57,7 +57,7 @@ def read_files_metadata(files_dir, save_to_disk=False):
 
     if save_to_disk:
         os.makedirs("metadata") if not os.path.exists("metadata") else None
-        with open(r"metadata\data.pkl", "wb") as f:
+        with open(r"metadata\audio_metadata.pkl", "wb") as f:
             pickle.dump(metadata_cluster, f)
     return metadata_cluster
 
@@ -97,7 +97,10 @@ def histogram(dataframe_column):
     plt.show()
 
 
-file_cluster = read_files_metadata(AUDIO_FILES_DIR, save_to_disk=True)
+# LOADING/READING the audio data
+with open(r"metadata\audio_metadata.pkl", 'rb') as f:
+    file_cluster = pickle.load(f)
+# file_cluster = read_files_metadata(AUDIO_FILES_DIR, save_to_disk=True)
 
 # FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
 # 1.15 with 1x stddev and 1.74 with 2x stddev
