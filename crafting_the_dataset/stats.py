@@ -9,6 +9,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 AUDIO_FILES_DIR = r"c:\Dataset\kicks"
+
+SAMPLE_RATE = 44100
+MONO = True
+
 SHOW_PLOT = True
 FFT_LIB = librosa.get_fftlib()
 
@@ -34,7 +38,7 @@ def read_files_metadata(files_dir, save_to_disk=False):
 
             # MAKE all MONO and the same SAMPLERATE
             # audio_data, sample_rate = librosa.load(file_path)
-            audio_data, sample_rate = librosa.load(file_path, mono=True, sr=44100)
+            audio_data, sample_rate = librosa.load(file_path, mono=MONO, sr=SAMPLE_RATE)
 
             num_channels = len(audio_data.shape)
             if num_channels == 1:
@@ -66,7 +70,7 @@ def pick_a_random_waveform_and_display_it(signals):
     random_index = random.randint(0, len(signals) - 1)
     randomly_picked_array = signals[random_index]
     plt.figure(figsize=(10, 4))
-    librosa.display.waveshow(randomly_picked_array, sr=44100)
+    librosa.display.waveshow(randomly_picked_array, sr=SAMPLE_RATE)
     plt.title('Waveform')
     plt.xlabel('Time (seconds)')
     plt.ylabel('Amplitude')
@@ -101,9 +105,13 @@ def filter_based_on_duration_in_seconds(metadata_object, duration_threshold):
     filtered = []
     for file_name, metadata in metadata_object.items():
         if metadata["duration"] <= duration_threshold:
-            signal, _ = librosa.load(metadata["path"], mono=True, sr=44100)
+            signal, _ = librosa.load(metadata["path"], mono=MONO, sr=SAMPLE_RATE)
             filtered.append(signal)
     return filtered, len(filtered)
+
+
+def add_padding():
+    pass
 
 
 # LOADING/READING the audio data
@@ -123,17 +131,17 @@ print("# of signals removed:", len(file_cluster.keys()) - num_of_signals_after_f
 
 # TODO: adding padding to the right only
 # PAD to the same length
-# max_length = max(librosa.get_duration(y=sig, sr=44100) for sig in signals_filtered)
+# max_length = max(librosa.get_duration(y=sig, sr=SAMPLE_RATE) for sig in signals_filtered)
 max_length = DURATION_THRESHOLD_IN_SECONDS
 signals_filtered_padded = []
 for sig in signals_filtered:
-    signal_padded = librosa.util.pad_center(sig, size=int(max_length * 44100))
+    signal_padded = librosa.util.pad_center(sig, size=int(max_length * SAMPLE_RATE))
     signals_filtered_padded.append(signal_padded)
 
 # check padded
 ds = []
 for s in signals_filtered_padded:
-    ds.append(librosa.get_duration(y=s, sr=44100))
+    ds.append(librosa.get_duration(y=s, sr=SAMPLE_RATE))
 print(min(ds))
 print(max(ds))
 
