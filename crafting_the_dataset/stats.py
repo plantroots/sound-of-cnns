@@ -1,6 +1,7 @@
 """Check the duration, sample rate, mono/stereo status and rms/loudness"""
 
 import os
+import pickle
 import random
 import librosa
 import numpy as np
@@ -20,7 +21,7 @@ def read_files_metadata(files_dir, save_to_disk=False):
                           'duration': 0.8173333333333334,
                           'samplerate': 48000}
     """
-    file_cluster = {}
+    metadata_cluster = {}
     for root, _, files in os.walk(files_dir):
         for file in files:
             file_path = os.path.join(root, file)
@@ -46,13 +47,19 @@ def read_files_metadata(files_dir, save_to_disk=False):
             # RMS/LOUDNESS
             rms = np.sqrt(np.mean(audio_data ** 2))
 
-            file_cluster[file] = {"path": file_path,
-                                  "duration": file_duration,
-                                  "samplerate": sample_rate,
-                                  "channels": channels,
-                                  "rms": rms
-                                  }
-    return file_cluster
+            metadata_cluster[file] = {
+                "path": file_path,
+                "duration": file_duration,
+                "samplerate": sample_rate,
+                "channels": channels,
+                "rms": rms
+            }
+
+    if save_to_disk:
+        os.makedirs("metadata") if not os.path.exists("metadata") else None
+        with open(r"metadata\data.pkl", "wb") as f:
+            pickle.dump(metadata_cluster, f)
+    return metadata_cluster
 
 
 def pick_a_random_waveform_and_display_it(signals):
@@ -90,7 +97,7 @@ def histogram(dataframe_column):
     plt.show()
 
 
-file_cluster = read_files_metadata(AUDIO_FILES_DIR)
+file_cluster = read_files_metadata(AUDIO_FILES_DIR, save_to_disk=True)
 
 # FILTER SOME OF THE SIGNALS OUT (longer than 2 seconds) - 2826 total samples in the dataset
 # 1.15 with 1x stddev and 1.74 with 2x stddev
