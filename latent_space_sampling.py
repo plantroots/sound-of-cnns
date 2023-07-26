@@ -5,7 +5,7 @@ variational_autoencoder = VAE.load(save_folder=r"c:\Code\sound-of-cnns\model")
 variational_autoencoder.summary()
 
 
-def sample_from_latent_space(vae_model, num_of_samples=1):
+def sample_from_latent_space_and_feed_to_decoder(vae_model, num_of_samples=1):
     # Get the dimensions of the latent space
     latent_dim = vae_model.latent_space_dim
 
@@ -19,4 +19,4 @@ def sample_from_latent_space(vae_model, num_of_samples=1):
 
 
 # 'generated_samples' contains the randomly generated data points in the original data space.
-generated_samples = sample_from_latent_space(vae_model=variational_autoencoder, num_of_samples=1)
+generated_samples = sample_from_latent_space_and_feed_to_decoder(vae_model=variational_autoencoder, num_of_samples=1)
