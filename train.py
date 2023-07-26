@@ -1,15 +1,14 @@
 import os
+import librosa
 import numpy as np
 
-from keras.datasets import mnist
 from vae import VAE
-import librosa
 
 LEARNING_RATE = 0.0005
 BATCH_SIZE = 1
 EPOCHS = 200
 
-SPECTROGRAMS_PATH = r"c:\Dataset\filtered_kicks\sounds"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks\sounds"
 
 
 def load_fsdd(spectrograms_path):
@@ -31,14 +30,6 @@ def load_fsdd(spectrograms_path):
 
 
 def train(x_train, learning_rate, batch_size, epochs):
-    # for MNIST
-    # autoencoder = VAE(
-    #     input_shape=(28, 28, 1),
-    #     conv_filters=(32, 64, 64, 64),
-    #     conv_kernels=(3, 3, 3, 3),
-    #     conv_strides=(1, 2, 2, 1),
-    #     latent_space_dim=2  # increase this for better fidelity
-    # )
     # for AUDIO
     autoencoder = VAE(
         input_shape=(76734, 1, 1),
@@ -54,8 +45,7 @@ def train(x_train, learning_rate, batch_size, epochs):
 
 
 if __name__ == "__main__":
-    # x_train, _, _, _ = load_mnist()
-    x_train = load_fsdd(SPECTROGRAMS_PATH)
+    x_train = load_fsdd(AUDIO_DIR)
     autoencoder = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
     autoencoder.save("model")
     # autoencoder2 = Autoencoder.load("model")
