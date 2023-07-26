@@ -3,26 +3,14 @@ import numpy as np
 
 from keras.datasets import mnist
 from vae import VAE
+import librosa
 
 LEARNING_RATE = 0.0005
-BATCH_SIZE = 64
+BATCH_SIZE = 1
 EPOCHS = 200
 
-SPECTROGRAMS_PATH = r"c:\Dataset\FSDD\spectrograms"
+SPECTROGRAMS_PATH = r"c:\Dataset\filtered_kicks\sounds"
 
-
-# def load_mnist():
-#     (x_train, y_train), (x_test, y_test) = mnist.load_data()
-#
-#     # normalize
-#     x_train = x_train.astype("float32") / 255
-#     x_train = x_train.reshape(x_train.shape + (1,))
-#
-#     # add extra dimension - the channel
-#     x_test = x_test.astype("float32") / 255
-#     x_test = x_test.reshape(x_test.shape + (1,))
-#
-#     return x_train, y_train, x_test, y_test
 
 def load_fsdd(spectrograms_path):
     x_train = []
@@ -31,11 +19,14 @@ def load_fsdd(spectrograms_path):
             file_path = os.path.join(root, file_name)
             # these are 2D while the greyscale images where 3D (28, 28, 1)
             # we need to add an extra dimensions to them
-            spectrogram = np.load(file_path)  # (n_bins, n_frames)
-            x_train.append(spectrogram)
+            signal, _ = librosa.load(file_path, mono=True, sr=44100)  # (n_bins, n_frames)
+            if len(signal) < 76734:
+                padding_to_add = 76734 - len(signal)
+                signal = np.append(signal, np.zeros(padding_to_add))
+            x_train.append(signal)
     x_train = np.array(x_train)
     # reshaping for audio data
-    x_train = x_train[..., np.newaxis]  # -> (3000, 256, 64, 1)
+    x_train = x_train[..., np.newaxis, np.newaxis]  # -> (3000, 76734, 1, 1)
     return x_train
 
 
@@ -50,7 +41,7 @@ def train(x_train, learning_rate, batch_size, epochs):
     # )
     # for AUDIO
     autoencoder = VAE(
-        input_shape=(256, 64, 1),
+        input_shape=(76734, 1, 1),
         conv_filters=(512, 256, 128, 64, 32),
         conv_kernels=(3, 3, 3, 3, 3),
         conv_strides=(2, 2, 2, 2, (2, 1)),
