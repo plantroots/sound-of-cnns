@@ -12,6 +12,7 @@ AUDIO_FILES_DIR = r"c:\Dataset\kicks"
 
 SAMPLE_RATE = 44100
 MONO = True
+DURATION_THRESHOLD_IN_SECONDS = 1.74
 
 SHOW_PLOT = True
 FFT_LIB = librosa.get_fftlib()
@@ -110,8 +111,14 @@ def filter_based_on_duration_in_seconds(metadata_object, duration_threshold):
     return filtered, len(filtered)
 
 
-def add_padding():
-    pass
+def add_padding(signals):
+    # TODO: adding padding to the right only
+    max_length = DURATION_THRESHOLD_IN_SECONDS
+    signals_padded = []
+    for sig in signals:
+        signal_padded = librosa.util.pad_center(sig, size=int(max_length * SAMPLE_RATE))
+        signals_padded.append(signal_padded)
+    return signals_padded
 
 
 # LOADING/READING the audio data
@@ -119,32 +126,19 @@ with open(r"metadata\audio_metadata.pkl", 'rb') as f:
     file_cluster = pickle.load(f)
 # file_cluster = read_files_metadata(AUDIO_FILES_DIR, save_to_disk=True)
 
-# FILTER some of the signals out (longer than 2 seconds) - 2826 total samples in the dataset
+# FILTER duration (2826 in total)
 # 1.15 with 1x stddev and 1.74 with 2x stddev
 # at 1.74 -> 76734 samples at this samplerate
-DURATION_THRESHOLD_IN_SECONDS = 1.74
 signals_filtered, num_of_signals_after_filtering = filter_based_on_duration_in_seconds(file_cluster,
                                                                                        DURATION_THRESHOLD_IN_SECONDS)
 print("# of signals before filtering:", len(file_cluster.keys()))
 print("# of signals after filtering:", num_of_signals_after_filtering)
 print("# of signals removed:", len(file_cluster.keys()) - num_of_signals_after_filtering)
 
-# TODO: adding padding to the right only
-# PAD to the same length
-# max_length = max(librosa.get_duration(y=sig, sr=SAMPLE_RATE) for sig in signals_filtered)
-max_length = DURATION_THRESHOLD_IN_SECONDS
-signals_filtered_padded = []
-for sig in signals_filtered:
-    signal_padded = librosa.util.pad_center(sig, size=int(max_length * SAMPLE_RATE))
-    signals_filtered_padded.append(signal_padded)
+# PADDING
+signals_filtered_padded = add_padding(signals_filtered)
 
-# check padded
-ds = []
-for s in signals_filtered_padded:
-    ds.append(librosa.get_duration(y=s, sr=SAMPLE_RATE))
-print(min(ds))
-print(max(ds))
-
+# STATS DATAFRAME
 file_cluster_tuple = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(file_cluster_tuple)
 
