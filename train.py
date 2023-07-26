@@ -4,11 +4,14 @@ import numpy as np
 
 from vae import VAE
 
-LEARNING_RATE = 0.0005
-BATCH_SIZE = 1
-EPOCHS = 200
-
 AUDIO_DIR = r"c:\Dataset\filtered_kicks\sounds"
+# 22050/44100 -> 38368/76736
+SAMPLE_RATE = 22050
+NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
+
+LEARNING_RATE = 0.0005
+BATCH_SIZE = 2
+EPOCHS = 30
 
 
 def load_fsdd(spectrograms_path):
@@ -18,21 +21,22 @@ def load_fsdd(spectrograms_path):
             file_path = os.path.join(root, file_name)
             # these are 2D while the greyscale images where 3D (28, 28, 1)
             # we need to add an extra dimensions to them
-            signal, _ = librosa.load(file_path, mono=True, sr=44100)  # (n_bins, n_frames)
-            if len(signal) < 76734:
-                padding_to_add = 76734 - len(signal)
+            signal, _ = librosa.load(file_path, mono=True, sr=SAMPLE_RATE)  # (n_bins, n_frames)
+
+            if len(signal) < NUM_OF_SAMPLES_IN_A_FILE:
+                padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(signal)
                 signal = np.append(signal, np.zeros(padding_to_add))
             x_train.append(signal)
     x_train = np.array(x_train)
     # reshaping for audio data
-    x_train = x_train[..., np.newaxis, np.newaxis]  # -> (3000, 76734, 1, 1)
+    x_train = x_train[..., np.newaxis, np.newaxis]  # -> (2737, 76736, 1, 1)
     return x_train
 
 
 def train(x_train, learning_rate, batch_size, epochs):
     # for AUDIO
     autoencoder = VAE(
-        input_shape=(76734, 1, 1),
+        input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1, 1),
         conv_filters=(512, 256, 128, 64, 32),
         conv_kernels=(3, 3, 3, 3, 3),
         conv_strides=(2, 2, 2, 2, (2, 1)),
