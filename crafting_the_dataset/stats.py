@@ -1,14 +1,17 @@
 """Check the duration, sample rate, mono/stereo status and rms/loudness"""
 
 import os
+import shutil
 import pickle
 import random
 import librosa
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 AUDIO_FILES_DIR = r"c:\Dataset\kicks"
+FILTERED_FILES_DIR = r"c:\Dataset\filtered_kicks\sounds"
 
 SAMPLE_RATE = 44100
 MONO = True
@@ -104,11 +107,13 @@ def histogram(dataframe_column):
 
 def filter_based_on_duration_in_seconds(metadata_object, duration_threshold):
     filtered = []
+    filtered_full_paths = []
     for file_name, metadata in metadata_object.items():
         if metadata["duration"] <= duration_threshold:
             signal, _ = librosa.load(metadata["path"], mono=MONO, sr=SAMPLE_RATE)
             filtered.append(signal)
-    return filtered, len(filtered)
+            filtered_full_paths.append(metadata["path"])
+    return filtered, len(filtered), filtered_full_paths
 
 
 def add_padding(signals):
@@ -121,6 +126,27 @@ def add_padding(signals):
     return signals_padded
 
 
+def copy_file(source_path, destination_path):
+    try:
+        # Check if the source file exists
+        if not os.path.isfile(source_path):
+            print(f"Error: Source file '{source_path}' does not exist.")
+            return
+
+        # Perform the file copy operation
+        shutil.copy(source_path, destination_path)
+        print(f"File '{source_path}' copied to '{destination_path}' successfully.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def copy_files_to_destination_folder(file_paths, destination_folder):
+    for path in file_paths:
+        file_name = os.path.basename(path)
+        destination_path = os.path.join(destination_folder, file_name)
+        copy_file(path, destination_path)
+
+
 # LOADING/READING the audio data
 with open(r"metadata\audio_metadata.pkl", 'rb') as f:
     file_cluster = pickle.load(f)
@@ -129,11 +155,14 @@ with open(r"metadata\audio_metadata.pkl", 'rb') as f:
 # FILTER duration (2826 in total)
 # 1.15 with 1x stddev and 1.74 with 2x stddev
 # at 1.74 -> 76734 samples at this samplerate
-signals_filtered, num_of_signals_after_filtering = filter_based_on_duration_in_seconds(file_cluster,
-                                                                                       DURATION_THRESHOLD_IN_SECONDS)
+signals_filtered, num_of_signals_after_filtering, filtered_paths = filter_based_on_duration_in_seconds(file_cluster,
+                                                                                                       DURATION_THRESHOLD_IN_SECONDS)
 print("# of signals before filtering:", len(file_cluster.keys()))
 print("# of signals after filtering:", num_of_signals_after_filtering)
 print("# of signals removed:", len(file_cluster.keys()) - num_of_signals_after_filtering)
+
+# SAVE TO DISK FILTERED
+copy_files_to_destination_folder(filtered_paths, FILTERED_FILES_DIR)
 
 # PADDING
 signals_filtered_padded = add_padding(signals_filtered)
@@ -143,14 +172,14 @@ file_cluster_tuple = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(file_cluster_tuple)
 
 # DISPLAY random waveform
-pick_a_random_waveform_and_display_it(signals_filtered_padded)
+# pick_a_random_waveform_and_display_it(signals_filtered_padded)
 
 print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
-statistic_print("duration")
-statistic_print("samplerate", show_unique=True)
-statistic_print("rms")
-statistic_print("channels", show_unique=True)
+# statistic_print("duration")
+# statistic_print("samplerate", show_unique=True)
+# statistic_print("rms")
+# statistic_print("channels", show_unique=True)
 print("*" * 25)
 
 # if SHOW_PLOT:
