@@ -1,0 +1,47 @@
+Encountering loss values of NaN (Not a Number) during training in TensorFlow typically indicates numerical instability
+or other issues in the optimization process. Here are some common causes for loss becoming NaN during training:
+
+1. **Learning Rate Too High**: A learning rate that is too high can cause the optimization process to diverge, leading
+to NaN values in the loss. Try reducing the learning rate to a smaller value and see if the issue persists.
+
+2. **Vanishing/Exploding Gradients**: In deep networks, gradients can become very small (vanishing) or very large
+(exploding), causing instability during optimization. This can lead to NaN values in the loss. Consider using
+techniques like gradient clipping or batch normalization to address this issue.
+
+3. **Improper Data Preprocessing**: Incorrect data preprocessing, such as normalization, can lead to numerical
+instabilities during training. Ensure that you preprocess your data correctly and consistently.
+
+4. **Invalid Loss Function**: Using an inappropriate or unstable loss function can cause NaN values. Double-check the
+formulation and implementation of your loss function.
+
+5. **Numerical Precision**: In some cases, numerical precision issues can arise due to the limited representation of
+floating-point numbers. This can lead to small values getting rounded to zero or causing other numerical instabilities.
+
+6. **NaN or Infinite Input Data**: If your input data contains NaN or infinite values, it can propagate through the
+network and lead to NaN loss values. Ensure that your input data is properly cleaned and does not contain any invalid values.
+
+7. **Overfitting**: Overfitting occurs when the model becomes too complex and memorizes the training data, leading
+to poor generalization. This can result in unstable training and potentially NaN loss values. Consider using regularization techniques to mitigate overfitting.
+
+8. **Missing Data**: If your data contains missing values, ensure you handle them properly. Some operations in
+TensorFlow might not handle NaN values correctly, leading to NaN in the loss.
+
+9. **Incorrect Model Architecture**: A poorly designed model architecture might not be able to learn from the data
+properly and lead to numerical issues. Check if your model is suitable for the task at hand and has enough capacity to
+learn the patterns in the data.
+
+10. **Numerical Instabilities in Custom Operations**: If you are using custom operations or loss functions, check
+for numerical instabilities in those implementations.
+
+To diagnose and fix the issue, you can try the following steps:
+
+- Set the learning rate to a small value.
+- Check your loss function and ensure its stability.
+- Print intermediate values during training using `tf.print()` to identify where NaN values are introduced.
+- Check the data preprocessing and ensure it is done correctly.
+- Ensure that your input data does not contain NaN or infinite values.
+- Consider reducing the complexity of your model or using regularization techniques.
+- If using custom operations, thoroughly check their implementations for numerical stability.
+
+By carefully inspecting these potential causes, you can address the issue of NaN loss during training and achieve more
+stable and successful model training.
