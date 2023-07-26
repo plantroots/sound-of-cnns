@@ -142,16 +142,15 @@ signals_filtered_padded = add_padding(signals_filtered)
 file_cluster_tuple = tuple(file_cluster.values())
 stats_df = pd.DataFrame.from_records(file_cluster_tuple)
 
-unique_sample_rates = len(stats_df["samplerate"].unique().tolist())
-
+# DISPLAY random waveform
 pick_a_random_waveform_and_display_it(signals_filtered_padded)
 
 print("\n", f" -> stats for: {AUDIO_FILES_DIR} <-", "\n")
 print("*" * 25)
-# statistic_print("duration")
-# statistic_print("samplerate", show_unique=True)
-# statistic_print("rms")
-# statistic_print("channels", show_unique=True)
+statistic_print("duration")
+statistic_print("samplerate", show_unique=True)
+statistic_print("rms")
+statistic_print("channels", show_unique=True)
 print("*" * 25)
 
 # if SHOW_PLOT:
