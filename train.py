@@ -4,14 +4,14 @@ import numpy as np
 
 from vae import VAE
 
-AUDIO_DIR = r"c:\Dataset\filtered_kicks\sounds"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 # 22050/44100 -> 38368/76736
 SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
 
-LEARNING_RATE = 0.0005
+LEARNING_RATE = 0.0001
 BATCH_SIZE = 2
-EPOCHS = 30
+EPOCHS = 1000
 
 
 def load_dataset(audio_dir):
