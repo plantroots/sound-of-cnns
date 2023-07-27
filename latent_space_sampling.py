@@ -42,7 +42,8 @@ def sample_from_latent_space_and_feed_to_decoder(vae_model, denormalize_params, 
     # Denormalize
     mean = denormalize_params["mean"]
     stddev = denormalize_params["stddev"]
-    max_values_mean = round(average_list_elements(denormalize_params["max_values"]), 2)
+    # max_values_mean = round(average_list_elements(denormalize_params["max_values"]), 2)
+    max_values_mean = 0.91
 
     signal = revert_peak_amplitude_normalization(generated_data, max_values_mean)
 
