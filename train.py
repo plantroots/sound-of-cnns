@@ -28,6 +28,7 @@ def load_dataset(audio_dir):
     train_set = []
     means = []
     standard_deviations = []
+    max_values = []
     for root, _, file_names in os.walk(audio_dir):
         for file_name in file_names:
             file_path = os.path.join(root, file_name)
@@ -35,9 +36,11 @@ def load_dataset(audio_dir):
 
             mean = np.mean(signal)
             std = np.std(signal)
+            max_value = np.max(np.abs(signal))
 
             means.append(mean)
             standard_deviations.append(std)
+            max_values.append(max_value)
 
             # normalized_signal = (signal - mean) / std
             normalized_signal = peak_amplitude_normalization(signal)
@@ -56,10 +59,11 @@ def load_dataset(audio_dir):
 
     mean_and_stddev_of_the_train_dataset = {
         "mean": average_list_elements(means),
-        "stddev": average_list_elements(standard_deviations)
+        "stddev": average_list_elements(standard_deviations),
+        "max_values": max_values
     }
 
-    with open(os.path.join(METADATA_DIR, "mean_and_stddev.pkl"), "wb") as f:
+    with open(os.path.join(METADATA_DIR, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
         pickle.dump(mean_and_stddev_of_the_train_dataset, f)
 
     return train_set
