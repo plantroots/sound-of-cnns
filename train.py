@@ -13,8 +13,15 @@ SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph works
 
 LEARNING_RATE = 0.0002
+# 128 on colab with A100 GPU
 BATCH_SIZE = 32
 EPOCHS = 100
+
+
+def peak_amplitude_normalization(audio_data, target_max=1.0):
+    max_val = np.max(np.abs(audio_data))
+    normalized_data = audio_data * (target_max / max_val)
+    return normalized_data
 
 
 def load_dataset(audio_dir):
@@ -32,7 +39,8 @@ def load_dataset(audio_dir):
             means.append(mean)
             standard_deviations.append(std)
 
-            normalized_signal = (signal - mean) / std
+            # normalized_signal = (signal - mean) / std
+            normalized_signal = peak_amplitude_normalization(signal)
 
             if len(normalized_signal) < NUM_OF_SAMPLES_IN_A_FILE:
                 padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(normalized_signal)

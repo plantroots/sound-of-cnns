@@ -2,4 +2,5 @@
 /model
 __pycache__
 /samples
+/checks
 /crafting_the_dataset/metadata

@@ -19,6 +19,20 @@ def peak_amplitude_normalization(audio_data, target_max=1.0):
     return normalized_data
 
 
+# TODO: make a list of all the original max value to try and extrapolate that to the generated sounds for reverting
+def revert_peak_amplitude_normalization(normalized_data, original_max):
+    # Get the maximum absolute amplitude from the normalized data
+    max_val = np.max(np.abs(normalized_data))
+
+    # Calculate the scaling factor used during normalization
+    scaling_factor = original_max / max_val
+
+    # Revert the normalization by multiplying with the scaling factor
+    original_data = normalized_data * scaling_factor
+
+    return original_data
+
+
 def load_dataset_check(audio_dir):
     train_set = []
     means = []
