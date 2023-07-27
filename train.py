@@ -12,8 +12,8 @@ SAMPLE_RATE = 22050
 # NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
 NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph works
 
-LEARNING_RATE = 0.0001
-BATCH_SIZE = 2
+LEARNING_RATE = 0.0002
+BATCH_SIZE = 32
 EPOCHS = 100
 
 
