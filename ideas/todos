@@ -2,3 +2,5 @@
 2. modify latent space dims
 3. modify the architecture
 4. train more (google colab)
+5. make a general visualization function to check the output (maybe edit in Reaper)
+6. experiment with more activation/normalization combos
