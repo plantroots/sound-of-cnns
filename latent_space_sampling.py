@@ -39,6 +39,7 @@ generated_samples, signal_samples = sample_from_latent_space_and_feed_to_decoder
                                                                                  )
 # TODO: FIX THE OUTPUT DIMENSION SO THAT IT WILL MATCH THE INPUT
 # Reshape
-reshaped = signal_samples[0].reshape((613888,))
+reshaped = signal_samples[0].flatten()
+# print(len(reshaped))
 # Save the generated data
 soundfile.write(os.path.join(OUTPUT_PATH, "sample_1.wav"), reshaped, 22050)

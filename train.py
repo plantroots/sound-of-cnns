@@ -5,15 +5,16 @@ import numpy as np
 
 from vae import VAE
 
-AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks"
 METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
 # 22050/44100 -> 38368/76736
 SAMPLE_RATE = 22050
-NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
+# NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
+NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph works
 
 LEARNING_RATE = 0.0001
 BATCH_SIZE = 2
-EPOCHS = 1000
+EPOCHS = 100
 
 
 def load_dataset(audio_dir):
@@ -37,10 +38,13 @@ def load_dataset(audio_dir):
                 padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(normalized_signal)
                 normalized_signal = np.append(normalized_signal, np.zeros(padding_to_add))
 
-            train_set.append(normalized_signal)
+            array_reshaped = np.reshape(normalized_signal, (640, 64))
+            train_set.append(array_reshaped)
+
+            # train_set.append(normalized_signal)
 
     train_set = np.array(train_set)
-    train_set = train_set[..., np.newaxis, np.newaxis]  # -> (2737, 76736, 1, 1)
+    train_set = train_set[..., np.newaxis]  # -> (2737, 76736, 1, 1)
 
     mean_and_stddev_of_the_train_dataset = {
         "mean": average_list_elements(means),
@@ -64,7 +68,8 @@ def average_list_elements(input_list):
 def train(x_train, learning_rate, batch_size, epochs):
     # for AUDIO
     autoencoder = VAE(
-        input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1, 1),
+        input_shape=(640, 64, 1),
+        # input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1, 1),
         conv_filters=(512, 256, 128, 64, 32),
         conv_kernels=(3, 3, 3, 3, 3),
         conv_strides=(2, 2, 2, 2, (2, 1)),
