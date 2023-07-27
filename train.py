@@ -5,8 +5,8 @@ import numpy as np
 
 from vae import VAE
 
-# AUDIO_DIR = r"c:\Dataset\filtered_kicks"
-AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks"
+# AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
 # 22050/44100 -> 38368/76736
 SAMPLE_RATE = 22050
@@ -16,7 +16,7 @@ NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph wor
 LEARNING_RATE = 0.00001
 # 128 on colab with A100 GPU
 BATCH_SIZE = 16
-EPOCHS = 1000
+EPOCHS = 100
 
 
 def peak_amplitude_normalization(audio_data, target_max=1.0):
@@ -95,7 +95,7 @@ def train(x_train, learning_rate, batch_size, epochs):
         conv_filters=(512, 256, 128, 64, 32),
         conv_kernels=(4, 4, 4, 4, 4),
         conv_strides=(2, 2, 2, 2, 2),
-        latent_space_dim=128
+        latent_space_dim=5
     )
     autoencoder.summary()
     autoencoder.compile(learning_rate)

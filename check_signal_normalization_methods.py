@@ -51,19 +51,30 @@ def load_dataset_check(audio_dir):
             standard_deviations.append(std)
             max_values.append(max_value)
 
+            # normalized_signal = (signal - mean) / std
             normalized_signal = peak_amplitude_normalization(signal)
 
             if len(normalized_signal) < NUM_OF_SAMPLES_IN_A_FILE:
                 padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(normalized_signal)
                 normalized_signal = np.append(normalized_signal, np.zeros(padding_to_add))
 
-            array_reshaped = np.reshape(normalized_signal, (640, 64))
-            train_set.append(array_reshaped)
+            # array_reshaped = np.reshape(normalized_signal, (640, 64))
+            train_set.append(normalized_signal)
 
+            # train_set.append(normalized_signal)
             break
         break
     train_set = np.array(train_set)
     train_set = train_set[..., np.newaxis]  # -> (2737, 76736, 1, 1)
+
+    mean_and_stddev_of_the_train_dataset = {
+        "mean": average_list_elements(means),
+        "stddev": average_list_elements(standard_deviations),
+        "max_values": max_values
+    }
+
+    with open(os.path.join(METADATA_DIR, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
+        pickle.dump(mean_and_stddev_of_the_train_dataset, f)
 
     return train_set
 

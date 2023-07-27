@@ -174,7 +174,7 @@ class VAE:
 
         )
         x = conv_transpose_layer(x)
-        x = ReLU(name=f"decoder_relu_{layer_num}")(x)
+        x = Activation("tanh", name=f"decoder_relu_{layer_num}")(x)
         x = BatchNormalization(name=f"decoder_bn_{layer_num}")(x)
         return x
 
@@ -218,7 +218,7 @@ class VAE:
             name=f"encoder_conv_layer_{layer_number}"
         )
         x = conv_layer(x)
-        x = ReLU(name=f"encoder_relu_{layer_number}")(x)
+        x = Activation("tanh", name=f"encoder_relu_{layer_number}")(x)
         x = BatchNormalization(name=f"encoder_bn_{layer_number}")(x)
         return x
 
