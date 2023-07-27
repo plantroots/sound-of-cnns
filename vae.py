@@ -1,6 +1,6 @@
 from keras import Model
 from keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense, Reshape, Conv2DTranspose, Activation, \
-    Lambda
+    Lambda, Conv1D, Conv1DTranspose
 from keras import backend as K
 from keras.optimizers import Adam
 
@@ -161,7 +161,7 @@ class VAE:
 
     def _add_conv_transpose_layer(self, layer_index, x):
         layer_num = self._num_conv_layers - layer_index
-        conv_transpose_layer = Conv2DTranspose(
+        conv_transpose_layer = Conv1DTranspose(
             filters=self.conv_filters[layer_index],
             kernel_size=self.conv_kernels[layer_index],
             strides=self.conv_strides[layer_index],
@@ -175,7 +175,7 @@ class VAE:
         return x
 
     def _add_decoder_output(self, x):
-        conv_transpose_layer = Conv2DTranspose(
+        conv_transpose_layer = Conv1DTranspose(
             filters=1,  # [24, 24, 1]
             kernel_size=self.conv_kernels[0],
             strides=self.conv_strides[0],
@@ -206,7 +206,7 @@ class VAE:
     def _add_conv_layer(self, layer_index, x):
         """Adds a convolutional block to a graph of layers, consisting of a conv 2d + ReLU + BN"""
         layer_number = layer_index + 1
-        conv_layer = Conv2D(
+        conv_layer = Conv1D(
             filters=self.conv_filters[layer_index],
             kernel_size=self.conv_kernels[layer_index],
             strides=self.conv_strides[layer_index],

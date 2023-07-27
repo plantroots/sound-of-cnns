@@ -49,8 +49,8 @@ def load_dataset(audio_dir):
                 padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(normalized_signal)
                 normalized_signal = np.append(normalized_signal, np.zeros(padding_to_add))
 
-            array_reshaped = np.reshape(normalized_signal, (640, 64))
-            train_set.append(array_reshaped)
+            # array_reshaped = np.reshape(normalized_signal, (640, 64))
+            train_set.append(normalized_signal)
 
             # train_set.append(normalized_signal)
 
@@ -80,11 +80,11 @@ def average_list_elements(input_list):
 def train(x_train, learning_rate, batch_size, epochs):
     # for AUDIO
     autoencoder = VAE(
-        input_shape=(640, 64, 1),
-        # input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1, 1),
+        # input_shape=(640, 64, 1),
+        input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(3, 3, 3, 3, 3),
-        conv_strides=(2, 2, 2, 2, (2, 1)),
+        conv_kernels=(4, 4, 4, 4, 4),
+        conv_strides=(2, 2, 2, 2, 2),
         latent_space_dim=128
     )
     autoencoder.summary()
