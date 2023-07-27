@@ -1,0 +1,4 @@
+1. raise samplerate
+2. modify latent space dims
+3. modify the architecture
+4. train more (google colab)
