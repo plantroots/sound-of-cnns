@@ -14,7 +14,7 @@ NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph wor
 
 LEARNING_RATE = 0.0002
 # 128 on colab with A100 GPU
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 EPOCHS = 100
 
 

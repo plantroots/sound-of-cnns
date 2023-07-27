@@ -95,8 +95,12 @@ class VAE:
         return combined_loss
 
     def _calculate_reconstruction_loss(self, y_target, y_predicted):
+        print("error print")
+        print(y_target)
+        print(y_predicted)
         error = y_target - y_predicted
-        reconstruction_loss = K.mean(K.square(error), axis=[1, 2, 3])
+        print(error)
+        reconstruction_loss = K.mean(K.square(error), axis=[1, 2])
         return reconstruction_loss
 
     def _calculate_kl_loss(self, y_target, y_predicted):
