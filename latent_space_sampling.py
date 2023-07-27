@@ -50,16 +50,19 @@ def sample_from_latent_space_and_feed_to_decoder(vae_model, denormalize_params, 
     return generated_data, signal
 
 
+SAMPLES_NUM = 10
+
 # 'generated_samples' contains the randomly generated data points in the original data space.
 generated_samples, signal_samples = sample_from_latent_space_and_feed_to_decoder(vae_model=variational_autoencoder,
                                                                                  denormalize_params=denormalization_parameters,
-                                                                                 num_of_samples=1
+                                                                                 num_of_samples=SAMPLES_NUM
                                                                                  )
-# Reshape
-reshaped_signal = signal_samples[0].flatten()
-reshaped_generated = generated_samples[0].flatten()
-# print(len(reshaped))
-# Save the generated data
-soundfile.write(os.path.join(OUTPUT_PATH, "demormalized_sample_1.wav"), reshaped_signal, 22050)
-soundfile.write(os.path.join(OUTPUT_PATH, "generated_sample_1.wav"), reshaped_generated, 22050)
 
+for i in range(SAMPLES_NUM):
+    # Reshape
+    reshaped_signal = signal_samples[i].flatten()
+    reshaped_generated = generated_samples[i].flatten()
+    # print(len(reshaped))
+    # Save the generated data
+    soundfile.write(os.path.join(OUTPUT_PATH, f"demormalized_sample_{i}.wav"), reshaped_signal, 22050)
+    # soundfile.write(os.path.join(OUTPUT_PATH, f"generated_sample_{i}.wav"), reshaped_generated, 22050)
