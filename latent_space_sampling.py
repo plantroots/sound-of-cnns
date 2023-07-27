@@ -55,7 +55,10 @@ generated_samples, signal_samples = sample_from_latent_space_and_feed_to_decoder
                                                                                  num_of_samples=1
                                                                                  )
 # Reshape
-reshaped = signal_samples[0].flatten()
+reshaped_signal = signal_samples[0].flatten()
+reshaped_generated = generated_samples[0].flatten()
 # print(len(reshaped))
 # Save the generated data
-soundfile.write(os.path.join(OUTPUT_PATH, "sample_1.wav"), reshaped, 22050)
+soundfile.write(os.path.join(OUTPUT_PATH, "demormalized_sample_1.wav"), reshaped_signal, 22050)
+soundfile.write(os.path.join(OUTPUT_PATH, "generated_sample_1.wav"), reshaped_generated, 22050)
+
