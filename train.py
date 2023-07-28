@@ -8,10 +8,11 @@ from vae import VAE
 AUDIO_DIR = r"c:\Dataset\filtered_kicks"
 # AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
+
 # 22050/44100 -> 38368/76736
 SAMPLE_RATE = 22050
-# NUM_OF_SAMPLES_IN_A_FILE = 38368  # 76736 instead of 76734 so that the graph works
-NUM_OF_SAMPLES_IN_A_FILE = 40960  # 76736 instead of 76734 so that the graph works
+# NUM_OF_SAMPLES_IN_A_FILE = 38368
+NUM_OF_SAMPLES_IN_A_FILE = 40960
 
 LEARNING_RATE = 0.00001
 # 128 on colab with A100 GPU
@@ -95,7 +96,7 @@ def train(x_train, learning_rate, batch_size, epochs):
         conv_filters=(512, 256, 128, 64, 32),
         conv_kernels=(4, 4, 4, 4, 4),
         conv_strides=(2, 2, 2, 2, 2),
-        latent_space_dim=5
+        latent_space_dim=10
     )
     autoencoder.summary()
     autoencoder.compile(learning_rate)

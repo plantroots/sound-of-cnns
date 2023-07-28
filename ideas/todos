@@ -3,3 +3,4 @@
 3. modify the architecture
 4. train more (google colab)
 5. experiment with more activation/normalization combos
+6. use sigma as a hyperparameter (reconstruction_loss_weight)
