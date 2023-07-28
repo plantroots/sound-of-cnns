@@ -6,7 +6,10 @@ from utils import read_audio_files
 # SAMPLE_RATE = 22050
 SAMPLE_RATE = 44100
 
+# generated samples
 AUDIO_FILES_DIR = r"c:\Code\sound-of-cnns\samples"
+
+# original samples
 # AUDIO_FILES_DIR = r"c:\Dataset\filtered_kicks_small"
 
 
