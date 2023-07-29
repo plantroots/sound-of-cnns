@@ -8,7 +8,7 @@ SAMPLE_RATE = 22050
 # SAMPLE_RATE = 44100
 
 # generated samples
-AUDIO_FILES_DIR = r"c:\Code\sound-of-cnns\samples"
+AUDIO_FILES_DIR = r"c:\Models\1000_epochs_1dCNN_5_LS_TANH_small_dataset_11000_loss\samples"
 
 # original samples
 # AUDIO_FILES_DIR = r"c:\Dataset\filtered_kicks_small"

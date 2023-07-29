@@ -1,0 +1,15 @@
+TODO:
+1. raise samplerate
+2. modify latent space dims
+3. modify the architecture
+4. train more (google colab)
+5. experiment with more activation/normalization combos
+6. use sigma as a hyperparameter (reconstruction_loss_weight)
+7. experiment with a LR scheduler
+8. train on both raw audio and spectrograms
+9. post-processing smoothing to fill in the gaps
+10. add tensorboard scalars
+
+
+OBSERVATIONS:
+1. modifying the LS dims actually shapes the waveform
