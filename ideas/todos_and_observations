@@ -9,7 +9,7 @@ TODO:
 8. train on both raw audio and spectrograms
 9. post-processing smoothing to fill in the gaps
 10. add tensorboard scalars
-
+11. double check the generated sample save to disk methods
 
 OBSERVATIONS:
 1. modifying the LS dims actually shapes the waveform
