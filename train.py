@@ -5,8 +5,8 @@ import numpy as np
 
 from vae import VAE
 
-AUDIO_DIR = r"c:\Dataset\filtered_kicks"
-# AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
+# AUDIO_DIR = r"c:\Dataset\filtered_kicks"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
 
 # 22050/44100 -> 38368/76736
@@ -14,10 +14,10 @@ SAMPLE_RATE = 22050
 # NUM_OF_SAMPLES_IN_A_FILE = 38368
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
-LEARNING_RATE = 0.00001
-# 128 on colab with A100 GPU
+# 0.00001 for entire dataset
+LEARNING_RATE = 0.0005
 BATCH_SIZE = 16
-EPOCHS = 100
+EPOCHS = 1000
 
 
 def peak_amplitude_normalization(audio_data, target_max=1.0):
@@ -81,30 +81,21 @@ def average_list_elements(input_list):
 
 def train(x_train, learning_rate, batch_size, epochs):
 
-    # autoencoder = VAE(
-    #     # input_shape=(640, 64, 1),
-    #     input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
-    #     conv_filters=(512, 256, 128, 64, 32),
-    #     conv_kernels=(4, 4, 4, 4, 4),
-    #     conv_strides=(2, 2, 2, 2, 2),
-    #     latent_space_dim=128
-    # )
-
-    autoencoder = VAE(
-        # input_shape=(640, 64, 1),
+    vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(4, 4, 4, 4, 4),
-        conv_strides=(2, 2, 2, 2, 2),
-        latent_space_dim=10
+        conv_kernels=(32, 32, 32, 32, 32),
+        conv_strides=(4, 4, 4, 4, 4),
+        latent_space_dim=5
     )
-    autoencoder.summary()
-    autoencoder.compile(learning_rate)
-    autoencoder.train(x_train, batch_size, epochs)
-    return autoencoder
+
+    vae.summary()
+    vae.compile(learning_rate)
+    vae.train(x_train, batch_size, epochs)
+    return vae
 
 
 if __name__ == "__main__":
     x_train = load_dataset(AUDIO_DIR)
-    autoencoder = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
-    autoencoder.save("model")
+    vae = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
+    vae.save("model")
