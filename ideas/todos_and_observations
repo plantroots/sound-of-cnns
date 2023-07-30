@@ -10,6 +10,8 @@ TODO:
 9. post-processing smoothing to fill in the gaps
 10. add tensorboard scalars
 11. double check the generated sample save to disk methods
+12. reconstruction weight between 1-10 normally
+13. LS normal dims for audio: 16-256. A common choice would be 64-128.
 
 OBSERVATIONS:
 1. modifying the LS dims actually shapes the waveform
