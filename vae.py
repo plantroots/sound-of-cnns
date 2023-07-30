@@ -187,7 +187,7 @@ class VAE:
             name=f"decoder_conv_transpose_layer_{self._num_conv_layers}"
         )
         x = conv_transpose_layer(x)
-        output_layer = Activation("sigmoid", name="sigmoid_layer")(x)
+        output_layer = Activation("tanh", name="tanh_layer")(x)
         return output_layer
 
     def _build_encoder(self):
