@@ -7,15 +7,18 @@ from vae import VAE
 
 # AUDIO_DIR = r"c:\Dataset\filtered_kicks"
 AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
+
+# GOOGLE COLAB PATH
+# AUDIO_DIR = "/content/drive/MyDrive/Music/filtered_kicks"
+
 METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
 
 # 22050/44100 -> 38368/76736
 SAMPLE_RATE = 22050
-# NUM_OF_SAMPLES_IN_A_FILE = 38368
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
 # 0.00001 for entire dataset
-LEARNING_RATE = 0.0005
+LEARNING_RATE = 0.0001
 BATCH_SIZE = 16
 EPOCHS = 1000
 
@@ -26,7 +29,7 @@ def peak_amplitude_normalization(audio_data, target_max=1.0):
     return normalized_data
 
 
-def load_dataset(audio_dir):
+def load_dataset(audio_dir, save_metadata=False):
     train_set = []
     means = []
     standard_deviations = []
@@ -54,10 +57,8 @@ def load_dataset(audio_dir):
             # array_reshaped = np.reshape(normalized_signal, (640, 64))
             train_set.append(normalized_signal)
 
-            # train_set.append(normalized_signal)
-
     train_set = np.array(train_set)
-    train_set = train_set[..., np.newaxis]  # -> (2737, 76736, 1, 1)
+    train_set = train_set[..., np.newaxis]
 
     mean_and_stddev_of_the_train_dataset = {
         "mean": average_list_elements(means),
@@ -65,8 +66,9 @@ def load_dataset(audio_dir):
         "max_values": max_values
     }
 
-    with open(os.path.join(METADATA_DIR, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
-        pickle.dump(mean_and_stddev_of_the_train_dataset, f)
+    if save_metadata:
+        with open(os.path.join(METADATA_DIR, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
+            pickle.dump(mean_and_stddev_of_the_train_dataset, f)
 
     return train_set
 
@@ -80,11 +82,10 @@ def average_list_elements(input_list):
 
 
 def train(x_train, learning_rate, batch_size, epochs):
-
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(32, 32, 32, 32, 32),
+        conv_kernels=(64, 64, 32, 32, 32),
         conv_strides=(4, 4, 4, 4, 4),
         latent_space_dim=5
     )
