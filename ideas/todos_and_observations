@@ -12,6 +12,7 @@ TODO:
 11. double check the generated sample save to disk methods
 12. reconstruction weight between 1-10 normally
 13. LS normal dims for audio: 16-256. A common choice would be 64-128.
+14. create a de-noising autoencoder
 
 OBSERVATIONS:
 1. modifying the LS dims actually shapes the waveform
