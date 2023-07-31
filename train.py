@@ -6,7 +6,7 @@ import numpy as np
 from vae import VAE
 
 # AUDIO_DIR = r"c:\Dataset\filtered_kicks"
-AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
+AUDIO_DIR = r"C:\Dataset\kicks_small"
 
 # GOOGLE COLAB PATH
 # AUDIO_DIR = "/content/drive/MyDrive/Music/filtered_kicks"
@@ -18,8 +18,8 @@ SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
 # 0.00001 for entire dataset
-LEARNING_RATE = 0.0001
-BATCH_SIZE = 16
+LEARNING_RATE = 0.0005
+BATCH_SIZE = 128
 EPOCHS = 1000
 
 
@@ -81,7 +81,7 @@ def average_list_elements(input_list):
     return average
 
 
-def train(x_train, learning_rate, batch_size, epochs):
+if __name__ == "__main__":
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
@@ -91,12 +91,12 @@ def train(x_train, learning_rate, batch_size, epochs):
     )
 
     vae.summary()
-    vae.compile(learning_rate)
-    vae.train(x_train, batch_size, epochs)
-    return vae
+    vae.compile(LEARNING_RATE)
 
+    try:
+        x_train = load_dataset(AUDIO_DIR)
+        vae.train(x_train, BATCH_SIZE, EPOCHS)
+    except KeyboardInterrupt:
+        print("\n--> saving model <--")
 
-if __name__ == "__main__":
-    x_train = load_dataset(AUDIO_DIR)
-    vae = train(x_train, LEARNING_RATE, BATCH_SIZE, EPOCHS)
     vae.save("model")
