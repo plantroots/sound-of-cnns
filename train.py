@@ -6,7 +6,7 @@ import numpy as np
 from vae import VAE
 
 # AUDIO_DIR = r"c:\Dataset\filtered_kicks"
-AUDIO_DIR = r"C:\Dataset\kicks_small"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 
 # GOOGLE COLAB PATH
 # AUDIO_DIR = "/content/drive/MyDrive/Music/filtered_kicks"
@@ -18,7 +18,7 @@ SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
 # 0.00001 for entire dataset
-LEARNING_RATE = 0.0005
+LEARNING_RATE = 0.00001
 BATCH_SIZE = 128
 EPOCHS = 1000
 
@@ -85,8 +85,8 @@ if __name__ == "__main__":
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(64, 64, 32, 32, 32),
-        conv_strides=(4, 4, 4, 4, 4),
+        conv_kernels=(1024, 1024, 1024, 1024, 1024),
+        conv_strides=(40, 4, 4, 4, 4),
         latent_space_dim=5
     )
 

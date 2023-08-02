@@ -21,26 +21,12 @@ OBSERVATIONS:
 1. modifying the LS dims actually shapes the waveform
 2. modifying the LS dims actually shapes the waveform from 5 to 10, adds more low-end
 3. different LR, same loss value issue:
+4. increasing the filter size give better and better results -> ex:
 
-Even if two different learning rates lead to the same loss value during training, they can still produce different
-outputs or model behaviors. The reason for this lies in the dynamics of the optimization process and the paths taken
-to reach the minimum loss.
-
-When training a machine learning model using gradient-based optimization algorithms like Stochastic Gradient Descent
-(SGD), the learning rate determines the step size taken in the direction of the steepest descent to update the model's
-parameters. If two learning rates, say LR1 and LR2, are such that they both converge to the same minimum loss, it means
-that both learning rates eventually find a region in the parameter space with a similar loss value.
-
-However, the paths taken by these two learning rates to reach the minimum loss might differ significantly. One learning
-rate might take smaller, slower steps, while the other might take larger, faster steps. As a result, they might
-navigate through different parts of the parameter space, and the model might settle in different local minima.
-
-The model's behavior in these different minima could vary, and this can have implications for generalization on unseen
-data. A model that has explored a broader region of the parameter space during training might be more robust and
-generalize better on new data, while a model that has landed in a narrower region might be more sensitive to small
-changes in the input data.
-
-In summary, even if two different learning rates lead to the same loss value, they can still produce different
-outputs and have different generalization abilities due to the different paths they take to reach the minimum loss.
-The choice of learning rate can significantly impact the performance and behavior of the trained model. Therefore,
-it's essential to tune and choose the learning rate carefully during the training process.
+    vae = VAE(
+        input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
+        conv_filters=(512, 256, 128, 64, 32),
+        conv_kernels=(1024, 1024, 1024, 1024, 1024),
+        conv_strides=(40, 4, 4, 4, 4),
+        latent_space_dim=5
+    )
