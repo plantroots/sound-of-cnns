@@ -85,7 +85,7 @@ if __name__ == "__main__":
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(1024, 1024, 1024, 1024, 1024),
+        conv_kernels=(2048, 2048, 2048, 2048, 2048),
         conv_strides=(40, 4, 4, 4, 4),
         latent_space_dim=5
     )

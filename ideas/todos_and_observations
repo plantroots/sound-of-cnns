@@ -6,7 +6,7 @@ TODO:
 4. train more (google colab)
 5. experiment with more activation/normalization combos
 6. use sigma as a hyperparameter (reconstruction_loss_weight)
-7. experiment with a LR scheduler
+7. experiment with a LR scheduler (fixed seed and plan it)
 8. train on both raw audio and spectrograms
 9. post-processing smoothing to fill in the gaps
 10. add tensorboard scalars
