@@ -15,6 +15,7 @@ TODO:
 13. LS normal dims for audio: 16-256. A common choice would be 64-128.
 14. create a de-noising autoencoder
 15. visualize latent_space representations of random samples
+16. remove zeroes from start and try to reduce the length more (or drag to middle)
 
 
 OBSERVATIONS:

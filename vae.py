@@ -83,6 +83,7 @@ class VAE:
         parameters_path = os.path.join(save_folder, "parameters.pkl")
         with open(parameters_path, "rb") as f:
             parameters = pickle.load(f)
+        print(parameters)
         autoencoder = VAE(*parameters)
         weights_path = os.path.join(save_folder, "weights.h5")
         autoencoder.load_weights(weights_path)
