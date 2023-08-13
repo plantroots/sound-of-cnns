@@ -89,7 +89,7 @@ if __name__ == "__main__":
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
         conv_filters=(256, 256, 128, 64, 32),
         # conv_kernels=(10, 10, 20, 20, 20),
-        conv_kernels=(10, 10, 40, 40, 40),
+        conv_kernels=(16, 8, 20, 40, 60),
         conv_strides=(8, 4, 2, 2, 2),
         latent_space_dim=5
     )
