@@ -78,29 +78,29 @@ def average_list_elements(input_list):
 
 if __name__ == "__main__":
 
-    LEARNING_RATE = 0.00001
-    # LEARNING_RATE = 0.0001
+    # LEARNING_RATE = 0.00001
+    LEARNING_RATE = 0.0001
     BATCH_SIZE = 4
-    EPOCHS = 2000
+    EPOCHS = 2500
+    TRAIN = True
 
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
-        # more filters == more resolution
-        conv_filters=(4096, 2048, 1024, 512, 256),
-        # smaller filters == more resolution
+        conv_filters=(256, 256, 128, 64, 32),
         conv_kernels=(10, 10, 5, 5, 5),
-        # TODO: try with stride of 2 on all layers
-        conv_strides=(4, 4, 4, 2, 2),
+        conv_strides=(8, 4, 2, 2, 2),
         latent_space_dim=5
     )
 
     vae.summary()
-    vae.compile(LEARNING_RATE)
 
-    try:
-        x_train = load_dataset(AUDIO_DIR)
-        vae.train(x_train, BATCH_SIZE, EPOCHS)
-    except KeyboardInterrupt:
-        print("\n--> saving model <--")
+    if TRAIN:
+        vae.compile(LEARNING_RATE)
 
-    vae.save("model")
+        try:
+            x_train = load_dataset(AUDIO_DIR)
+            vae.train(x_train, BATCH_SIZE, EPOCHS)
+        except KeyboardInterrupt:
+            print("\n--> saving model <--")
+
+        vae.save("model")
