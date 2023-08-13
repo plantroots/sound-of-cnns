@@ -17,9 +17,6 @@ METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
 SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
-# 0.00001 for entire dataset
-
-
 
 def peak_amplitude_normalization(audio_data, target_max=1.0):
     max_val = np.max(np.abs(audio_data))
@@ -83,6 +80,7 @@ if __name__ == "__main__":
 
     LEARNING_RATE = 0.00001
     # LEARNING_RATE = 0.0001
+    BATCH_SIZE = 4
     EPOCHS = 2000
 
     vae = VAE(
