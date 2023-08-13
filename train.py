@@ -18,9 +18,7 @@ SAMPLE_RATE = 22050
 NUM_OF_SAMPLES_IN_A_FILE = 40960
 
 # 0.00001 for entire dataset
-LEARNING_RATE = 0.00001
-BATCH_SIZE = 128
-EPOCHS = 1000
+
 
 
 def peak_amplitude_normalization(audio_data, target_max=1.0):
@@ -82,12 +80,19 @@ def average_list_elements(input_list):
 
 
 if __name__ == "__main__":
-    # TODO: more layers == more noise. Go with less layers than normal
+
+    LEARNING_RATE = 0.00001
+    # LEARNING_RATE = 0.0001
+    EPOCHS = 2000
+
     vae = VAE(
         input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
-        conv_filters=(512, 256, 128, 64, 32),
-        conv_kernels=(64, 64, 32, 32, 32),
-        conv_strides=(4, 4, 4, 4, 4),
+        # more filters == more resolution
+        conv_filters=(4096, 2048, 1024, 512, 256),
+        # smaller filters == more resolution
+        conv_kernels=(10, 10, 5, 5, 5),
+        # TODO: try with stride of 2 on all layers
+        conv_strides=(4, 4, 4, 2, 2),
         latent_space_dim=5
     )
 
