@@ -1,21 +1,30 @@
 import os
+import wandb
 import pickle
 import librosa
 import numpy as np
 
 from vae import VAE
 
-# AUDIO_DIR = r"c:\Dataset\filtered_kicks"
-AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
-
 # GOOGLE COLAB PATH
-# AUDIO_DIR = "/content/drive/MyDrive/Music/filtered_kicks"
+# r"/content/drive/MyDrive/Music/filtered_kicks"
 
-METADATA_DIR = r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata"
+# sample rate: # 22050/44100 -> 38368/76736
 
-# 22050/44100 -> 38368/76736
-SAMPLE_RATE = 22050
-NUM_OF_SAMPLES_IN_A_FILE = 40960
+wandb.init(
+    project="vae_train_sample_run",
+    config={
+        "audio_dir": r"c:\Dataset\filtered_kicks_small",
+        "metadata_dir": r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata",
+        "sample_rate": 22050,
+        "number_of_samples_in_a_file": 40960,
+        "epochs": 2500,
+        "batch_size": 4,
+        "learning_rate": 0.0001
+    }
+)
+
+config = wandb.config
 
 
 def peak_amplitude_normalization(audio_data, target_max=1.0):
@@ -32,7 +41,7 @@ def load_dataset(audio_dir, save_metadata=False):
     for root, _, file_names in os.walk(audio_dir):
         for file_name in file_names:
             file_path = os.path.join(root, file_name)
-            signal, _ = librosa.load(file_path, mono=True, sr=SAMPLE_RATE)
+            signal, _ = librosa.load(file_path, mono=True, sr=config.sample_rate)
 
             mean = np.mean(signal)
             std = np.std(signal)
@@ -45,8 +54,8 @@ def load_dataset(audio_dir, save_metadata=False):
             # normalized_signal = (signal - mean) / std
             normalized_signal = peak_amplitude_normalization(signal)
 
-            if len(normalized_signal) < NUM_OF_SAMPLES_IN_A_FILE:
-                padding_to_add = NUM_OF_SAMPLES_IN_A_FILE - len(normalized_signal)
+            if len(normalized_signal) < config.number_of_samples_in_a_file:
+                padding_to_add = config.number_of_samples_in_a_file - len(normalized_signal)
                 normalized_signal = np.append(normalized_signal, np.zeros(padding_to_add))
 
             # array_reshaped = np.reshape(normalized_signal, (640, 64))
@@ -62,7 +71,7 @@ def load_dataset(audio_dir, save_metadata=False):
     }
 
     if save_metadata:
-        with open(os.path.join(METADATA_DIR, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
+        with open(os.path.join(config.metadata_dir, "train_set_mean_stddev_and_max_values.pkl"), "wb") as f:
             pickle.dump(mean_and_stddev_of_the_train_dataset, f)
 
     return train_set
@@ -78,15 +87,11 @@ def average_list_elements(input_list):
 
 if __name__ == "__main__":
 
-    # LEARNING_RATE = 0.00001
-    LEARNING_RATE = 0.0001
-    BATCH_SIZE = 4
-    EPOCHS = 2500
     TRAIN = True
     # TRAIN = False
 
     vae = VAE(
-        input_shape=(NUM_OF_SAMPLES_IN_A_FILE, 1),
+        input_shape=(config.number_of_samples_in_a_file, 1),
         conv_filters=(256, 256, 128, 64, 32),
         conv_kernels=(16, 8, 20, 20, 40),
         conv_strides=(8, 4, 2, 2, 2),
@@ -96,12 +101,13 @@ if __name__ == "__main__":
     vae.summary()
 
     if TRAIN:
-        vae.compile(LEARNING_RATE)
+        vae.compile(config.learning_rate)
 
         try:
-            x_train = load_dataset(AUDIO_DIR)
-            vae.train(x_train, BATCH_SIZE, EPOCHS)
+            x_train = load_dataset(config.audio_dir)
+            vae.train(x_train, config.batch_size, config.epochs)
         except KeyboardInterrupt:
             print("\n--> saving model <--")
 
         vae.save("model")
+        wandb.finish()

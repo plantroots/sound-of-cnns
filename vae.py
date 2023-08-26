@@ -3,6 +3,7 @@ from keras.layers import Input, Conv2D, ReLU, BatchNormalization, Flatten, Dense
     Lambda, Conv1D, Conv1DTranspose
 from keras import backend as K
 from keras.optimizers import Adam
+from wandb.keras import WandbCallback
 
 import os
 import pickle
@@ -63,7 +64,8 @@ class VAE:
                        x_train,
                        batch_size=batch_size,
                        epochs=num_epochs,
-                       shuffle=True)
+                       shuffle=True,
+                       callbacks=[WandbCallback()])
 
     def save(self, save_folder="."):
         self._create_folder_if_it_doesnt_exist(save_folder)
