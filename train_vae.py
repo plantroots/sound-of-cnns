@@ -6,12 +6,11 @@ import numpy as np
 
 from vae import VAE
 
-# GOOGLE COLAB / LOCAL PATHS
+# LOCAL/COLAB PATHS
+AUDIO_DIR = r"c:\Dataset\filtered_kicks_small"
 # AUDIO_DIR = r"/content/drive/MyDrive/Music/filtered_kicks"
-AUDIO_DIR = r"c:\Dataset\filtered_kicks"
 
 TRAIN = True
-
 NUMBER_OF_SAMPLES_IN_A_FILE = 40960
 # sample rate: # 22050/44100 -> 38368/76736
 
@@ -26,7 +25,7 @@ VAE_ARCHITECTURE = {
 wandb.init(
     project="vae_train_sample_run",
     config={
-        "audio_dir": r"c:\Dataset\filtered_kicks_small",
+        "audio_dir": AUDIO_DIR,
         "metadata_dir": r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata",
         "sample_rate": 22050,
         "number_of_samples_in_a_file": NUMBER_OF_SAMPLES_IN_A_FILE,
