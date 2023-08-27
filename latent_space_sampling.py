@@ -5,7 +5,6 @@ import soundfile
 import numpy as np
 
 from vae import VAE
-from train_vae import average_list_elements
 
 variational_autoencoder = VAE.load(save_folder=r"c:\Code\sound-of-cnns\model")
 variational_autoencoder.summary()
@@ -49,7 +48,7 @@ def sample_from_latent_space_and_feed_to_decoder(vae_model, denormalize_params, 
     return generated_data, signal
 
 
-SAMPLES_NUM = 100
+SAMPLES_NUM = 10
 
 # 'generated_samples' contains the randomly generated data points in the original data space.
 generated_samples, signal_samples = sample_from_latent_space_and_feed_to_decoder(vae_model=variational_autoencoder,

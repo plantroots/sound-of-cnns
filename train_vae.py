@@ -6,10 +6,22 @@ import numpy as np
 
 from vae import VAE
 
-# GOOGLE COLAB PATH
-# r"/content/drive/MyDrive/Music/filtered_kicks"
+# GOOGLE COLAB / LOCAL PATHS
+# AUDIO_DIR = r"/content/drive/MyDrive/Music/filtered_kicks"
+AUDIO_DIR = r"c:\Dataset\filtered_kicks"
 
+TRAIN = True
+
+NUMBER_OF_SAMPLES_IN_A_FILE = 40960
 # sample rate: # 22050/44100 -> 38368/76736
+
+VAE_ARCHITECTURE = {
+    "input_shape": (NUMBER_OF_SAMPLES_IN_A_FILE, 1),
+    "conv_filters": (256, 256, 128, 64, 32),
+    "conv_kernels": (16, 8, 20, 20, 40),
+    "conv_strides": (8, 4, 2, 2, 2),
+    "latent_space_dim": 5
+}
 
 wandb.init(
     project="vae_train_sample_run",
@@ -17,10 +29,11 @@ wandb.init(
         "audio_dir": r"c:\Dataset\filtered_kicks_small",
         "metadata_dir": r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata",
         "sample_rate": 22050,
-        "number_of_samples_in_a_file": 40960,
+        "number_of_samples_in_a_file": NUMBER_OF_SAMPLES_IN_A_FILE,
         "epochs": 2500,
         "batch_size": 4,
-        "learning_rate": 0.0001
+        "learning_rate": 0.0001,
+        "vae_architecture": VAE_ARCHITECTURE
     }
 )
 
@@ -87,15 +100,12 @@ def average_list_elements(input_list):
 
 if __name__ == "__main__":
 
-    TRAIN = True
-    # TRAIN = False
-
     vae = VAE(
-        input_shape=(config.number_of_samples_in_a_file, 1),
-        conv_filters=(256, 256, 128, 64, 32),
-        conv_kernels=(16, 8, 20, 20, 40),
-        conv_strides=(8, 4, 2, 2, 2),
-        latent_space_dim=5
+        input_shape=VAE_ARCHITECTURE["input_shape"],
+        conv_filters=VAE_ARCHITECTURE["conv_filters"],
+        conv_kernels=VAE_ARCHITECTURE["conv_kernels"],
+        conv_strides=VAE_ARCHITECTURE["conv_strides"],
+        latent_space_dim=VAE_ARCHITECTURE["latent_space_dim"]
     )
 
     vae.summary()
