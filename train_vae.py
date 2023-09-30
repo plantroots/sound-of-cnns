@@ -30,9 +30,9 @@ wandb.init(
         "metadata_dir": r"C:\Code\sound-of-cnns\crafting_the_dataset\metadata",
         "sample_rate": 22050,
         "number_of_samples_in_a_file": NUMBER_OF_SAMPLES_IN_A_FILE,
-        "epochs": 10000,
+        "epochs": 100000000,
         "batch_size": 16,
-        "learning_rate": 0.001,
+        "learning_rate": 0.0001,
         "vae_architecture": VAE_ARCHITECTURE
     }
 )

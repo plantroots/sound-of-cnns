@@ -52,6 +52,8 @@ class VAE:
 
     def compile(self, learning_rate=0.0001):
         optimizer = Adam(learning_rate=learning_rate)
+        # Option for newer Tensorflow version (activate for Collab)
+        # optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=learning_rate)
         self.model.compile(
             optimizer=optimizer,
             loss=self._calculate_combined_loss,
