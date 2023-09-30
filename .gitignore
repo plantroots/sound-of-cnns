@@ -1,5 +1,6 @@
 .idea
 /model
+/wandb
 __pycache__
 /samples
 /checks
